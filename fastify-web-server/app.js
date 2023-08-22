@@ -4,18 +4,20 @@ const path = require('path')
 const AutoLoad = require('@fastify/autoload')
 const dev = process.env.NODE_ENV !== 'production';
 
-const fastifyStatic = dev && require('@fastify/static');
+const pointOfView = require('@fastify/view');
+const handlebars = require('handlebars');
 
 // Pass --options via CLI arguments in command to enable these options.
 module.exports.options = {}
 
 module.exports = async function (fastify, opts) {
   // Place here your custom code!
-  if (dev) {
-      fastify.register(fastifyStatic, {
-          root: path.join(__dirname, 'public')
-      });
-  }
+
+  fastify.register(pointOfView, {
+     engine: { handlebars },
+     root: path.join(__dirname, 'views'),
+     layout: 'layout.hbs'
+  });
   // Do not touch the following lines
 
   // This loads all plugins defined in plugins
