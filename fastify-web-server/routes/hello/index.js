@@ -4,6 +4,7 @@ const fastify = require("fastify");
 
 module.exports = async (fastify, opts) => {
     fastify.get('/', async (request, reply) => {
-        return reply.sendfile('hello.html');
+        const {greeting = 'hello'}  = request.query;
+        return reply.view('hello.hbs', {greeting})
     })
 }
