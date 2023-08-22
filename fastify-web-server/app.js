@@ -2,13 +2,20 @@
 
 const path = require('path')
 const AutoLoad = require('@fastify/autoload')
+const dev = process.env.NODE_ENV !== 'production';
+
+const fastifyStatic = dev && require('@fastify/static');
 
 // Pass --options via CLI arguments in command to enable these options.
 module.exports.options = {}
 
 module.exports = async function (fastify, opts) {
   // Place here your custom code!
-
+  if (dev) {
+      fastify.register(fastifyStatic, {
+          root: path.join(__dirname, 'public')
+      });
+  }
   // Do not touch the following lines
 
   // This loads all plugins defined in plugins
