@@ -1,25 +1,9 @@
-const {Router} = require('express');
+var express = require('express');
+var router = express.Router();
 
-const router = Router();
-
-const root = `
-    <html lang="en">
-        <head>
-            <title>root title</title>
-            <style>
-                body { background: #333; margin: 1.25rem }
-                a { color: yellow; font-size: 2rem; font-family: sans-serif }
-            </style>
-
-        </head>
-        <body>
-            <a href='/hello'>Hello</a>
-        </body>
-    </html>
-`;
-
-router.get('/', (req, res) => {
-    res.send(root);
-})
+/* GET home page. */
+router.get('/', function(req, res, next) {
+    res.render('index');
+});
 
 module.exports = router;
