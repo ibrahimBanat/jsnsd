@@ -21,7 +21,8 @@
     "fastify": "^4.0.0",
     "fastify-cli": "^5.8.0",
     "fastify-plugin": "^4.0.0",
-    "handlebars": "^4.7.8"
+    "handlebars": "^4.7.8",
+    "hn-latest-stream": "^1.0.2"
   },
   "devDependencies": {
     "@fastify/static": "^6.10.2",
