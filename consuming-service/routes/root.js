@@ -15,6 +15,8 @@ module.exports = async function (fastify, opts) {
 
         const bicycleReq = await fetch(`${bicycleSrv}/${id}`, {signal});
         const brandReq = await fetch(`${brandSrv}/${id}`, {signal});
+        if (bicycleReq.status === 404 || brandReq.status === 404) throw fastify.httpErrors.notFound();
+        if (bicycleReq.status === 400 || brandReq.status === 400) throw fastify.httpErrors.badRequest();
 
         const bicyclePromise = bicycleReq.json();
         const brandPromise = brandReq.json();
