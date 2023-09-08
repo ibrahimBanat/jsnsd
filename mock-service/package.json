@@ -1,0 +1,10 @@
+{
+    "name": "mock-service",
+    "version": "1.0.0",
+    "scripts": {
+        "bicycle": "PORT=4040 node bicycle-service.js",
+        "brand": "PORT=5050 node brand-service.js"
+    },
+    "keywords": [],
+    "author": ""
+}
