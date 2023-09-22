@@ -1,58 +1,52 @@
 'use strict'
-const { promisify } = require('util')
+const {promisify} = require('util')
 const {bicycle} = require("../../data/model");
-const { uid } = bicycle
+const {uid} = bicycle
 const read = promisify(bicycle.read)
 const create = promisify(bicycle.create)
 const update = promisify(bicycle.update)
 const del = promisify(bicycle.del)
 
 module.exports = async (fastify, opts) => {
-    const { notFound } = fastify.httpErrors;
-
-    const bodySchema = {
-            type: 'object',
-            required: ['data'],
-            additionalProperties: false,
-            properties : {
-                data : {
-                    type: 'object',
-                    required: ['color', 'brand'],
-                    additionalProperties: false,
-                    properties: {
-                        brand: {type: 'string'},
-                        color: {type: 'string'}
-                    }
-                }
-            }
-    };
-    const paramsSchema = {
-        id: {
-            type: 'integer'
+    const {notFound} = fastify.httpErrors;
+    const dataSchema = {
+        type: 'object', required: ['color', 'brand'], additionalProperties: false, properties: {
+            brand: {type: 'string'}, color: {type: 'string'}
         }
     }
+    const bodySchema = {
+        type: 'object', required: ['data'], additionalProperties: false, properties: {
+            data: dataSchema
+        }
+    };
+    const idSchema = {type: 'integer'};
+    const paramsSchema = {
+        id: idSchema
+    }
+
     fastify.post('/', {
         schema: {
-            body: bodySchema
+            body: bodySchema, response: {
+                201: {
+                    id: idSchema
+                }
+            }
         }
     }, async (request, reply) => {
-        const { data } = request.body
+        const {data} = request.body
         const id = uid()
         await create(id, data)
         reply.code(201)
-        return { id }
+        return {id}
     })
 
-    fastify.post('/:id/update',
-        {
-          schema: {
-              body: bodySchema,
-              params: paramsSchema
-          }
-        },
-        async (request, reply) => {
-        const { id } = request.params
-        const { data } = request.body
+    fastify.post('/:id/update', {
+        schema: {
+            body: bodySchema, params: paramsSchema
+        }
+    }, async (request, reply) => {
+        const {id} = request.params
+        const {data} = request.body
         try {
             await update(id, data)
             reply.code(204)
@@ -64,10 +58,13 @@ module.exports = async (fastify, opts) => {
 
     fastify.get('/:id', {
         schema: {
-            params: paramsSchema
+            params: paramsSchema,
+            response: {
+                200: dataSchema
+            }
         }
     }, async (request, reply) => {
-        const { id } = request.params
+        const {id} = request.params
         try {
             return await read(id)
         } catch (err) {
@@ -77,15 +74,14 @@ module.exports = async (fastify, opts) => {
     })
 
     fastify.put('/:id', {
-        body: bodySchema,
-        params: paramsSchema
+        body: bodySchema, params: paramsSchema
     }, async (request, reply) => {
-        const { id } = request.params
-        const { data } = request.body
+        const {id} = request.params
+        const {data} = request.body
         try {
             await create(id, data)
             reply.code(201)
-            return { }
+            return {}
         } catch (err) {
             if (err.message === 'resource exists') {
                 await update(id, data)
@@ -98,11 +94,10 @@ module.exports = async (fastify, opts) => {
 
     fastify.delete('/:id', {
         schema: {
-            body: bodySchema,
-            params: paramsSchema
+            body: bodySchema, params: paramsSchema
         }
     }, async (request, reply) => {
-        const { id } = request.params
+        const {id} = request.params
         try {
             await del(id)
             reply.code(204)
