@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@fastify/reply-from": "^9.4.0"
+  }
+}
